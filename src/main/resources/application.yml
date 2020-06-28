@@ -1,0 +1,12 @@
+spring:
+  r2dbc:
+    url: r2dbc:pool:postgres://47.106.240.155:5432/holiday;
+    username: postgres
+    password: 123456
+
+  redis:
+    host: 47.106.240.155
+    port: 6379
+    password:
+    timeout: 5000
+
