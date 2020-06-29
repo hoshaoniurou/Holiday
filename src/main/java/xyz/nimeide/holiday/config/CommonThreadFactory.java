@@ -1,4 +1,4 @@
-package xyz.nimeide.holiday.common.config;
+package xyz.nimeide.holiday.config;
 
 import org.jetbrains.annotations.NotNull;
 

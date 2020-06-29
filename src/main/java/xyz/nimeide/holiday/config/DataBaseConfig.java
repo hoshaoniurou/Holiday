@@ -1,4 +1,4 @@
-package xyz.nimeide.holiday.common.config;
+package xyz.nimeide.holiday.config;
 
 import io.r2dbc.spi.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
