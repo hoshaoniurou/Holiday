@@ -28,6 +28,7 @@ import java.util.Objects;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 /**
  * @author wangjian
@@ -44,41 +45,30 @@ public class HolidayController {
             new ThreadPoolExecutor.CallerRunsPolicy()
     );
 
-    @Autowired
-    private HolidayRepository holidayRepository;
+    private final HolidayRepository holidayRepository;
+
+    public HolidayController(HolidayRepository holidayRepository) {
+        this.holidayRepository = holidayRepository;
+    }
 
     @SneakyThrows
     @GetMapping("/sync-internet-day/{year}")
-    public Mono<String> geInternetDay(@PathVariable("year") String year) {
+    public Mono<Boolean> geInternetDay(@PathVariable("year") String year) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .get()
                 .url("http://api.haoshenqi.top/holiday?date=" + year)
                 .build();
         Call call = client.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                final String res = Objects.requireNonNull(response.body()).string();
-                Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, (JsonDeserializer<LocalDate>)
-                        (json, type, jsonDeserializationContext) -> {
-                            String datetime = json.getAsJsonPrimitive().getAsString();
-                            return LocalDate.parse(datetime, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                        }).create();
-                List<Holiday> holidayList = Arrays.asList(gson.fromJson(res, Holiday[].class));
-                Mono<Boolean> booleanMono = holidayRepository.deleteHolidayByYear(year);
-                System.out.println(booleanMono.block());
-                EXECUTOR.execute(() -> {
-                    Flux<Holiday> holidayFlux = holidayRepository.saveAll(holidayList);
-                    System.out.println(Thread.currentThread().getName());
-                    holidayFlux.toIterable().forEach(System.out::println);
-                });
-            }
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-            }
-        });
-        return Mono.create(monoSink -> monoSink.success("success"));
+        final String res = Objects.requireNonNull(call.execute().body()).string();
+        Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, (JsonDeserializer<LocalDate>)
+                (json, type, jsonDeserializationContext) -> {
+                    String datetime = json.getAsJsonPrimitive().getAsString();
+                    return LocalDate.parse(datetime, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                }).create();
+        List<Holiday> holidayList = Arrays.asList(gson.fromJson(res, Holiday[].class));
+        holidayRepository.deleteHolidayByYear(year).subscribe();
+        return holidayRepository.saveAll(holidayList)
+                .all(v -> !ObjectUtils.isEmpty(v));
     }
 }
