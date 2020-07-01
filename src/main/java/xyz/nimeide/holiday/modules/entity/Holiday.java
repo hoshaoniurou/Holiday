@@ -9,7 +9,6 @@ import org.springframework.data.relational.core.mapping.Table;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import java.io.Serializable;
-import java.time.LocalDate;
 
 /**
  * @author wangjian
@@ -24,7 +23,7 @@ public class Holiday implements Serializable {
     private Integer id;
 
     @ApiModelProperty("日期")
-    private LocalDate date;
+    private String date;
 
     @ApiModelProperty("年")
     private Integer year;
