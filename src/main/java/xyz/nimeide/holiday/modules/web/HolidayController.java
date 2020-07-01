@@ -17,7 +17,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import xyz.nimeide.holiday.config.CommonThreadFactory;
 import xyz.nimeide.holiday.modules.dao.HolidayRepository;
-import xyz.nimeide.holiday.modules.dto.HolidayDO;
 import xyz.nimeide.holiday.modules.entity.Holiday;
 import xyz.nimeide.holiday.modules.service.HolidayService;
 
@@ -80,7 +79,7 @@ public class HolidayController {
      * @return HolidayDO
      */
     @GetMapping("/{time}")
-    public Flux<HolidayDO> time(@PathVariable("time") @NotNull("数据错误") String time){
+    public Flux<Holiday> time(@PathVariable("time") @NotNull("数据错误") String time){
         return holidayService.time(time);
     }
 }

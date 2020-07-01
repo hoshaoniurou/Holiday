@@ -2,7 +2,6 @@ package xyz.nimeide.holiday.modules.strategies;
 
 import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Flux;
-import xyz.nimeide.holiday.modules.dto.HolidayDO;
 import xyz.nimeide.holiday.modules.entity.Holiday;
 
 /**
@@ -10,5 +9,10 @@ import xyz.nimeide.holiday.modules.entity.Holiday;
  */
 public interface TimeStrategy {
 
-    Flux<HolidayDO> select(@NotNull String str);
+    /**
+     * 查询逻辑
+     * @param str 时间
+     * @return
+     */
+    Flux<Holiday> select(@NotNull String str);
 }

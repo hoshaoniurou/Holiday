@@ -1,7 +1,7 @@
 package xyz.nimeide.holiday.modules.service;
 
 import reactor.core.publisher.Flux;
-import xyz.nimeide.holiday.modules.dto.HolidayDO;
+import xyz.nimeide.holiday.modules.entity.Holiday;
 
 /**
  * @author hoshaoniurou
@@ -13,5 +13,5 @@ public interface HolidayService {
      * @param time
      * @return
      */
-    Flux<HolidayDO> time(String time);
+    Flux<Holiday> time(String time);
 }
